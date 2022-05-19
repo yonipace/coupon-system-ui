@@ -38,15 +38,17 @@ const CouponForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 id="description"
                 label="Description"
                 variant="outlined"
                 fullWidth
+                multiline
+                rows={2}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <FormControl fullWidth>
                 <InputLabel id="demo-simple-select-label">Category</InputLabel>
                 <Select
@@ -62,7 +64,7 @@ const CouponForm = () => {
               </FormControl>
             </Grid>
 
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 id="amount"
                 label="Amount"
@@ -70,7 +72,7 @@ const CouponForm = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 id="price"
                 label="Price"
@@ -78,6 +80,7 @@ const CouponForm = () => {
                 fullWidth
               />
             </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 id="startDate"
