@@ -10,9 +10,38 @@ import {
   Select,
   Paper,
 } from "@mui/material";
+import { useState } from "react";
 
 const CouponForm = () => {
-  const handleSubmit = (e) => {};
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [amount, setAmount] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const coupon = {
+      title,
+      description,
+      category,
+      price,
+      amount,
+      startDate,
+      endDate,
+    };
+    console.log(coupon);
+
+    fetch("http://localhost:8080/test/addCoupon", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(coupon),
+    }).then(() => {
+      console.log("New Coupon added");
+    });
+  };
 
   return (
     <Container maxWidth="sm">
@@ -32,61 +61,67 @@ const CouponForm = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
-                id="title"
                 label="Title"
                 variant="outlined"
                 fullWidth
+                onChange={(e) => setTitle(e.target.value)}
+                value={title}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
-                id="description"
                 label="Description"
                 variant="outlined"
                 fullWidth
                 multiline
                 rows={2}
+                onChange={(e) => setDescription(e.target.value)}
+                value={description}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Category</InputLabel>
+                <InputLabel>Category</InputLabel>
                 <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
                   label="Category"
+                  onChange={(e) => setCategory(e.target.value)}
+                  value={category}
                 >
-                  <MenuItem value={10}>Electricity</MenuItem>
-                  <MenuItem value={20}>Restaurant</MenuItem>
-                  <MenuItem value={30}>Hotel</MenuItem>
-                  <MenuItem value={40}>Vacation</MenuItem>
+                  <MenuItem value={"ELECTRICITY"}>Electricity</MenuItem>
+                  <MenuItem value={"RESTAURANT"}>Restaurant</MenuItem>
+                  <MenuItem value={"HOTEL"}>Hotel</MenuItem>
+                  <MenuItem value={"VACATION"}>Vacation</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={4}>
               <TextField
-                id="amount"
                 label="Amount"
                 variant="outlined"
+                type="number"
                 fullWidth
+                onChange={(e) => setAmount(e.target.value)}
+                value={amount}
               />
             </Grid>
             <Grid item xs={12} sm={4}>
               <TextField
-                id="price"
                 label="Price"
                 variant="outlined"
+                type="number"
                 fullWidth
+                onChange={(e) => setPrice(e.target.value)}
+                value={price}
               />
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <TextField
-                id="startDate"
                 label="Start Date"
                 type="date"
-                defaultValue="2022-05-24"
+                onChange={(e) => setStartDate(e.target.value)}
+                value={startDate}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -95,10 +130,10 @@ const CouponForm = () => {
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
-                id="endDate"
                 label="End Date"
                 type="date"
-                defaultValue="2023-05-24"
+                onChange={(e) => setEndDate(e.target.value)}
+                value={endDate}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -115,7 +150,6 @@ const CouponForm = () => {
             Add New Coupon
           </Button>
         </Box>
-        ;
       </Paper>
     </Container>
   );
