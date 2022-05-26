@@ -1,5 +1,5 @@
 import { Container, Grid, List, Paper } from "@mui/material";
-import CouponCard from "./CouponCard";
+import CouponCard from "../CouponCard";
 
 const PurchaseCouponList = (coupons) => {
   return (

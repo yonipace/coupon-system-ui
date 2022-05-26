@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import CouponForm from "./components/CouponForm";
-import CouponTable from "./components/CouponTable";
-import PurchaseCouponList from "./components/PurchaseCouponList";
-import UserInfo from "./components/UserInfo";
+import CustomerLayout from "./components/customer/CustomerLayout";
+import AddCouponForm from "./components/company/AddCouponForm";
+import CompanyLayout from "./components/company/CompanyLayout";
 
 function App() {
-  const [coupons, setCoupons] = useState(dummyCoupons);
+  const [coupons, setCoupons] = useState();
   const [customerCoupons, setCustomerCoupons] = useState([]);
 
   useEffect(() => {
@@ -26,9 +25,8 @@ function App() {
 
   return (
     <div className="App">
-      <UserInfo />
-      <CouponTable coupons={customerCoupons} />
-      <PurchaseCouponList coupons={coupons} />
+      <CompanyLayout />
+      {/*<Layout purchased={customerCoupons} coupons={coupons} />*/}
     </div>
   );
 }

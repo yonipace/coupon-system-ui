@@ -9,10 +9,11 @@ import {
   MenuItem,
   Select,
   Paper,
+  Card,
 } from "@mui/material";
 import { useState } from "react";
 
-const CouponForm = () => {
+const AddCouponForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
@@ -45,6 +46,14 @@ const CouponForm = () => {
 
   return (
     <Container maxWidth="sm">
+      <Card
+        elevation={6}
+        sx={{
+          mt: 3,
+        }}
+      >
+        <h2>Add New Coupon</h2>
+      </Card>
       <Paper elevation={6}>
         <Box
           component="form"
@@ -142,6 +151,7 @@ const CouponForm = () => {
             </Grid>
           </Grid>
           <Button
+            size="large"
             type="submit"
             fullWidth
             variant="contained"
@@ -155,4 +165,4 @@ const CouponForm = () => {
   );
 };
 
-export default CouponForm;
+export default AddCouponForm;

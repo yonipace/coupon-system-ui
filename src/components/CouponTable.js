@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@mui/material";
 
-const CouponTable = (coupons) => {
+const CouponTable = (props) => {
   return (
     <Container
       component={Card}
@@ -24,7 +24,7 @@ const CouponTable = (coupons) => {
       <TableContainer>
         <Table>
           <TableHead>
-            <h2>Purchased Coupons</h2>
+            <h2>{props.header}</h2>
             <TableRow>
               <TableCell>Id</TableCell>
               <TableCell>Title</TableCell>
@@ -37,7 +37,7 @@ const CouponTable = (coupons) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {coupons.coupons.map((row) => (
+            {props.coupons.map((row) => (
               <TableRow>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.title}</TableCell>
