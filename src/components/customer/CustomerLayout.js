@@ -8,7 +8,7 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CouponTable from "../CouponTable";
+import CompanyCouponTable from "../company/CompanyCouponTable";
 import PurchaseCouponList from "./PurchaseCouponList";
 import { useState } from "react";
 
@@ -63,7 +63,7 @@ const CustomerLayout = (props) => {
             header="Purchased Coupons"
           />
         )}
-        {isOnHomePage && <CouponTable coupons={props.purchased} />}
+        {isOnHomePage && <CompanyCouponTable coupons={props.purchased} />}
       </div>
     </div>
   );

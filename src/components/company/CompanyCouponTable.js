@@ -8,11 +8,20 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import UpdateCoupon from "./UpdateCoupon";
+import DeleteWarningDialog from "./DeleteWarningDialog";
 
-const CouponTable = (props) => {
+const CompanyCouponTable = (props) => {
+  const deleteHandler = (e) => {
+    console.log("delete clicked");
+    console.log(e.currentTarget.value);
+    /*add HTTP request - delete by id */
+  };
+
   return (
     <Container
       component={Card}
+      elevation={6}
       sx={{
         maxWidth: "lg",
         mt: 3,
@@ -21,12 +30,11 @@ const CouponTable = (props) => {
         display: "flex",
       }}
     >
-      <TableContainer>
+      <TableContainer sx={{ maxHeight: 500 }}>
+        <h2>{props.header}</h2>
         <Table>
           <TableHead>
-            <h2>{props.header}</h2>
             <TableRow>
-              <TableCell>Id</TableCell>
               <TableCell>Title</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Category</TableCell>
@@ -34,12 +42,13 @@ const CouponTable = (props) => {
               <TableCell>Price ($)</TableCell>
               <TableCell>Start Date</TableCell>
               <TableCell>End Date</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {props.coupons.map((row) => (
-              <TableRow>
-                <TableCell>{row.id}</TableCell>
+              <TableRow key={row.id}>
                 <TableCell>{row.title}</TableCell>
                 <TableCell>{row.description}</TableCell>
                 <TableCell>{row.category}</TableCell>
@@ -47,6 +56,13 @@ const CouponTable = (props) => {
                 <TableCell>{row.price}</TableCell>
                 <TableCell>{row.startDate}</TableCell>
                 <TableCell>{row.endDate}</TableCell>
+                <TableCell>
+                  <DeleteWarningDialog row={row} onConfirm={deleteHandler} />
+                </TableCell>
+
+                <TableCell>
+                  <UpdateCoupon row={row} />
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -56,4 +72,4 @@ const CouponTable = (props) => {
   );
 };
 
-export default CouponTable;
+export default CompanyCouponTable;
