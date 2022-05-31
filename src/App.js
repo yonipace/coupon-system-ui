@@ -5,7 +5,7 @@ import AddCouponForm from "./components/company/AddCouponForm";
 import CompanyLayout from "./components/company/CompanyLayout";
 import AdminLayout from "./components/admin/AdminLayout";
 import SignUp from "./components/SignUp";
-import Login from "./components/Login";
+import Login from "./pages/Login";
 import { Redirect, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CouponsPage from "./components/company/CouponsPage";

@@ -5,21 +5,23 @@ import {
   Card,
   Container,
   Grid,
-  Paper,
   Link,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import { Link as RouterLink } from "react-router-dom";
+import AuthContext from "../store/auth-context";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [client, setClient] = useState("CUSTOMER");
+
+  const authCtx = useContext(AuthContext);
 
   const handleChange = (e) => {
     setClient(e.target.value);
@@ -34,8 +36,41 @@ const Login = () => {
     };
     console.log(credentials);
 
-    setEmail("");
-    setPassword("");
+    /*send HTTP request */
+
+    fetch("http://localhost:8080/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            let errorMessage = "Authentication failed!";
+            throw new Error(errorMessage);
+          });
+        }
+      })
+      .then((data) => {
+        authCtx.login(data.token);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+  };
+
+  const getHandler = () => {
+    fetch("http://localhost:8080/admin/companies", {
+      headers: { token: authCtx.token },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        console.log(result);
+      });
   };
 
   return (
@@ -111,6 +146,15 @@ const Login = () => {
               sx={{ mt: 3 }}
             >
               Login
+            </Button>
+            <Button
+              size="large"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3 }}
+              onClick={getHandler}
+            >
+              GetCompanies
             </Button>
           </Box>
           <Link component={RouterLink} to="/signup" underline="hover">
