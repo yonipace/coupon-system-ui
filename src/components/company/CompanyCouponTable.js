@@ -8,14 +8,36 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useContext, useState, useEffect } from "react";
 import UpdateCoupon from "./UpdateCoupon";
 import DeleteWarningDialog from "./DeleteWarningDialog";
+import AuthContext from "../../store/auth-context";
 
-const CompanyCouponTable = (props) => {
+const CompanyCouponTable = () => {
+  const [coupons, setCoupons] = useState([]);
+
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/company/coupons", {
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setCoupons(result);
+      });
+  });
+
   const deleteHandler = (e) => {
-    console.log("delete clicked");
-    console.log(e.currentTarget.value);
-    /*add HTTP request - delete by id */
+    let url = "http://localhost:8080/company/coupons/" + e.currentTarget.value;
+    fetch(url, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    }).then(() => {
+      /*send confirmation to user */
+
+      console.log("Coupon Deleted");
+    });
   };
 
   return (
@@ -31,7 +53,7 @@ const CompanyCouponTable = (props) => {
       }}
     >
       <TableContainer sx={{ maxHeight: 500 }}>
-        <h2>{props.header}</h2>
+        <h2>Company Coupons</h2>
         <Table>
           <TableHead>
             <TableRow>
@@ -47,7 +69,7 @@ const CompanyCouponTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.coupons.map((row) => (
+            {coupons.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.title}</TableCell>
                 <TableCell>{row.description}</TableCell>
@@ -57,7 +79,11 @@ const CompanyCouponTable = (props) => {
                 <TableCell>{row.startDate}</TableCell>
                 <TableCell>{row.endDate}</TableCell>
                 <TableCell>
-                  <DeleteWarningDialog row={row} onConfirm={deleteHandler} />
+                  <DeleteWarningDialog
+                    row={row}
+                    onConfirm={deleteHandler}
+                    title="delete coupon"
+                  />
                 </TableCell>
 
                 <TableCell>

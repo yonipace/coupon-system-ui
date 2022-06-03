@@ -1,22 +1,45 @@
 import {
   Card,
   Container,
-  IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateCustomer from "./UpdateCustomer";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../../../store/auth-context";
+import AddCustomer from "./AddCustomer";
+import DeleteWarningDialog from "../../company/DeleteWarningDialog";
 
-const CustomerTable = (props) => {
+const CustomerTable = () => {
+  const [customers, setCustomers] = useState([]);
+
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/customers", {
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setCustomers(result);
+      });
+  });
+
   const deleteHandler = (e) => {
-    console.log("delete clicked");
-    console.log(e.currentTarget.value);
+    let url = "http://localhost:8080/admin/customers/" + e.currentTarget.value;
+    fetch(url, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    }).then(() => {
+      /*send confirmation to user */
+
+      console.log("Customer Deleted");
+    });
   };
   return (
     <Container
@@ -31,7 +54,15 @@ const CustomerTable = (props) => {
       }}
     >
       <TableContainer>
-        <h2>Customers</h2>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          px={2}
+        >
+          <h2>Customers</h2>
+          <AddCustomer />
+        </Stack>
         <Table>
           <TableHead>
             <TableRow>
@@ -44,7 +75,7 @@ const CustomerTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.customers.map((row) => (
+            {customers.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.firstName}</TableCell>
@@ -52,11 +83,11 @@ const CustomerTable = (props) => {
                 <TableCell>{row.email}</TableCell>
 
                 <TableCell>
-                  <Tooltip title="delete customer">
-                    <IconButton onClick={deleteHandler} value={row.id}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <DeleteWarningDialog
+                    row={row}
+                    onConfirm={deleteHandler}
+                    title="delete customer"
+                  />
                 </TableCell>
                 <TableCell>
                   <UpdateCustomer row={row} />

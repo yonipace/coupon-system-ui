@@ -6,22 +6,42 @@ import {
   Container,
   Grid,
   Link,
+  Dialog,
+  AlertTitle,
+  Typography,
 } from "@mui/material";
 import { useContext, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
+import Alert from "@mui/material/Alert";
 import { Link as RouterLink } from "react-router-dom";
 import AuthContext from "../store/auth-context";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [client, setClient] = useState("CUSTOMER");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const authCtx = useContext(AuthContext);
+  const history = useHistory();
+
+  const getClientUrl = (clientType) => {
+    if (clientType === "ADMIN") {
+      return "/admin";
+    }
+    if (clientType === "CUSTOMER") {
+      return "/customer";
+    }
+    if (clientType === "COMPANY") {
+      return "/company";
+    }
+  };
 
   const handleChange = (e) => {
     setClient(e.target.value);
@@ -50,26 +70,16 @@ const Login = () => {
           return res.json();
         } else {
           return res.json().then((data) => {
-            let errorMessage = "Authentication failed!";
-            throw new Error(errorMessage);
+            throw new Error(data.message);
           });
         }
       })
       .then((data) => {
         authCtx.login(data.token);
+        history.replace(getClientUrl(data.client));
       })
       .catch((err) => {
-        alert(err.message);
-      });
-  };
-
-  const getHandler = () => {
-    fetch("http://localhost:8080/admin/companies", {
-      headers: { token: authCtx.token },
-    })
-      .then((res) => res.json())
-      .then((result) => {
-        console.log(result);
+        setErrorMessage(err.message);
       });
   };
 
@@ -87,9 +97,9 @@ const Login = () => {
           <h3>Login</h3>
         </Card>
       </Container>
-
       <Container maxWidth="xs">
         <Card elevation={3} sx={{ p: 2 }}>
+          <Typography color="error">{errorMessage}</Typography>
           <Box
             component="form"
             noValidate
@@ -146,15 +156,6 @@ const Login = () => {
               sx={{ mt: 3 }}
             >
               Login
-            </Button>
-            <Button
-              size="large"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3 }}
-              onClick={getHandler}
-            >
-              GetCompanies
             </Button>
           </Box>
           <Link component={RouterLink} to="/signup" underline="hover">

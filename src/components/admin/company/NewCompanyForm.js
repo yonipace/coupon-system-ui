@@ -16,16 +16,12 @@ const NewCompanyForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const customer = {
+    const company = {
       name,
       email,
       password,
     };
-    console.log(customer);
-
-    setName("");
-    setEmail("");
-    setPassword("");
+    props.onSubmit(company);
   };
 
   return (

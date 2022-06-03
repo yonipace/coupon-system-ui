@@ -1,11 +1,14 @@
 import { Button, TextField } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../../../store/auth-context";
 
 const UpdateCustomerForm = (props) => {
-  const [firstName, setFirstName] = useState(props.customer.name);
-  const [lastName, setLastName] = useState(props.customer.name);
+  const [firstName, setFirstName] = useState(props.customer.firstName);
+  const [lastName, setLastName] = useState(props.customer.lastName);
   const [email, setEmail] = useState(props.customer.email);
   const [password, setPassword] = useState(props.customer.password);
+
+  const authCtx = useContext(AuthContext);
 
   let id = props.customer.id;
 
@@ -20,7 +23,13 @@ const UpdateCustomerForm = (props) => {
     };
     console.log(updatedCustomer);
 
-    /*Add put HTTP request here */
+    fetch("http://localhost:8080/admin/customers", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+      body: JSON.stringify(updatedCustomer),
+    }).then(() => {
+      /*send confirmation to user */
+    });
 
     props.closeDialog();
   };

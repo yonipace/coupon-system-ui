@@ -1,22 +1,48 @@
 import {
   Card,
   Container,
-  IconButton,
+  Stack,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tooltip,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
 import UpdateCompany from "./UpdateCompany";
+import AddCompany from "./AddCompany";
+import { useEffect, useState, useContext } from "react";
+import AuthContext from "../../../store/auth-context";
+import DeleteWarningDialog from "../../company/DeleteWarningDialog";
 
 const CompanyTable = (props) => {
+  const [companies, setCompanies] = useState([]);
+
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/admin/companies", {
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setCompanies(result);
+      });
+  });
+
   const deleteHandler = (e) => {
     console.log("delete clicked");
     console.log(e.currentTarget.value);
+
+    let url = "http://localhost:8080/admin/companies/" + e.currentTarget.value;
+    fetch(url, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    }).then(() => {
+      /*send confirmation to user */
+
+      console.log("Company Deleted");
+    });
   };
   return (
     <Container
@@ -31,7 +57,15 @@ const CompanyTable = (props) => {
       }}
     >
       <TableContainer>
-        <h2>Companies</h2>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          px={2}
+        >
+          <h2>Companies</h2>
+          <AddCompany />
+        </Stack>
         <Table>
           <TableHead>
             <TableRow>
@@ -43,18 +77,18 @@ const CompanyTable = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.companies.map((row) => (
+            {companies.map((row) => (
               <TableRow key={row.id}>
                 <TableCell>{row.id}</TableCell>
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.email}</TableCell>
 
                 <TableCell>
-                  <Tooltip title="delete company">
-                    <IconButton onClick={deleteHandler} value={row.id}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </Tooltip>
+                  <DeleteWarningDialog
+                    row={row}
+                    onConfirm={deleteHandler}
+                    title="delete company"
+                  />
                 </TableCell>
 
                 <TableCell>

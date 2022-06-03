@@ -1,115 +1,101 @@
 import {
-  Box,
+  Alert,
   Button,
-  Card,
-  Container,
-  Grid,
-  Paper,
-  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../../../store/auth-context";
+import NewCustomerForm from "./NewCustomerForm";
 
 const AddCustomer = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const customer = {
-      firstName,
-      lastName,
-      email,
-      password,
-    };
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("");
+
+  const authCtx = useContext(AuthContext);
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowAlert(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleAddCustomer = (customer) => {
+    console.log("from add customer");
     console.log(customer);
-
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setPassword("");
+    /*HTTP request */
+    fetch("http://localhost:8080/admin/customers", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+      body: JSON.stringify(customer),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.message);
+          });
+        }
+      })
+      .then((data) => {
+        setAlertMessage(data.title + " customer added successfully!");
+        setAlertSeverity("success");
+        setShowAlert(true);
+        setOpen(false);
+      })
+      .catch((err) => {
+        setAlertMessage(err.message);
+        setAlertSeverity("error");
+        setShowAlert(true);
+      });
   };
 
   return (
     <div>
-      <Container maxWidth="xs">
-        <Card
-          elevation={6}
-          sx={{
-            mt: 3,
-          }}
+      <Button variant="contained" sx={{ mt: 2 }} onClick={handleClickOpen}>
+        Add New Customer
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Add New Customer</DialogTitle>
+        <DialogContent>
+          <NewCustomerForm text="Add Customer" onSubmit={handleAddCustomer} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          variant="filled"
+          onClose={handleCloseAlert}
+          severity={alertSeverity}
+          sx={{ width: "100%" }}
         >
-          <h2>Add New Customer</h2>
-        </Card>
-      </Container>
-
-      <Container maxWidth="xs">
-        <Paper elevation={6}>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{
-              p: 3,
-              mt: 3,
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <TextField
-                  label="First Name"
-                  variant="outlined"
-                  fullWidth
-                  onChange={(e) => setFirstName(e.target.value)}
-                  value={firstName}
-                ></TextField>
-              </Grid>
-              <Grid item xs={6}>
-                <TextField
-                  label="Last Name"
-                  variant="outlined"
-                  fullWidth
-                  onChange={(e) => setLastName(e.target.value)}
-                  value={lastName}
-                ></TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Email"
-                  variant="outlined"
-                  type="email"
-                  fullWidth
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                ></TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  type="password"
-                  fullWidth
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                ></TextField>
-              </Grid>
-            </Grid>
-            <Button
-              size="large"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Add Customer
-            </Button>
-          </Box>
-        </Paper>
-      </Container>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

@@ -26,7 +26,7 @@ const DeleteWarningDialog = (props) => {
 
   return (
     <div>
-      <Tooltip title="delete coupon">
+      <Tooltip title={props.title}>
         <IconButton onClick={handleClickOpen}>
           <DeleteIcon />
         </IconButton>

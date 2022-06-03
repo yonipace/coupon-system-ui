@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  Container,
-  Grid,
-  Paper,
-  TextField,
-} from "@mui/material";
+import { Box, Button, Grid, TextField } from "@mui/material";
 import { useState } from "react";
 
 const NewCustomerForm = (props) => {
@@ -23,7 +15,7 @@ const NewCustomerForm = (props) => {
       email,
       password,
     };
-    console.log(customer);
+    props.onSubmit(customer);
 
     setFirstName("");
     setLastName("");

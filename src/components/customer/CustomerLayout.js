@@ -1,70 +1,64 @@
-import {
-  AppBar,
-  IconButton,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { AppBar, Button, Stack, Toolbar, Typography } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import CompanyCouponTable from "../company/CompanyCouponTable";
-import PurchaseCouponList from "./PurchaseCouponList";
-import { useState } from "react";
+import SubjectIcon from "@mui/icons-material/Subject";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { Link } from "react-router-dom";
+import { useState, useEffect, useContext } from "react";
+import AuthContext from "../../store/auth-context";
 
-const CustomerLayout = (props) => {
-  const [isOnHomePage, setIsOnHomePage] = useState(true);
+const CustomerLayout = () => {
+  const [customer, setCustomer] = useState({});
 
-  const shoppingClickHandler = () => {
-    setIsOnHomePage(false);
-  };
-  const homeClickHandler = () => {
-    setIsOnHomePage(true);
-  };
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/customer/details", {
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setCustomer(result);
+      });
+  });
 
   return (
     <div>
       <AppBar position="static">
+        <Typography variant="h5" sx={{ mt: 2, ml: 3 }} align="justify">
+          {customer.firstName + " " + customer.lastName}
+        </Typography>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Local Customer
-          </Typography>
-          <Tooltip title="Purchase Coupons">
-            <IconButton
-              size="large"
+          <Stack direction="row" spacing={2}>
+            <Button
               color="inherit"
-              sx={{ m: 1 }}
-              onClick={shoppingClickHandler}
-            >
-              <ShoppingCartIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Home">
-            <IconButton
+              startIcon={<HomeIcon />}
               size="large"
-              color="inherit"
-              sx={{ m: 1 }}
-              onClick={homeClickHandler}
+              component={Link}
+              to="/customer/home"
             >
-              <HomeIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Details">
-            <IconButton size="large" color="inherit" sx={{ m: 1 }}>
-              <AccountCircleIcon />
-            </IconButton>
-          </Tooltip>
+              Home
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<SubjectIcon />}
+              size="large"
+              component={Link}
+              to="/customer/coupons"
+            >
+              Purchased Coupons
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<AddShoppingCartIcon />}
+              size="large"
+              component={Link}
+              to="/customer/purchase"
+            >
+              Purchase New Coupon
+            </Button>
+          </Stack>
         </Toolbar>
       </AppBar>
-      <div>
-        {!isOnHomePage && (
-          <PurchaseCouponList
-            coupons={props.coupons}
-            header="Purchased Coupons"
-          />
-        )}
-        {isOnHomePage && <CompanyCouponTable coupons={props.purchased} />}
-      </div>
     </div>
   );
 };

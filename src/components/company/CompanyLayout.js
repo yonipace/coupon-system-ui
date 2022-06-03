@@ -3,13 +3,28 @@ import HomeIcon from "@mui/icons-material/Home";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import SubjectIcon from "@mui/icons-material/Subject";
 import { Link } from "react-router-dom";
+import AuthContext from "../../store/auth-context";
+import { useState, useEffect, useContext } from "react";
 
 const CompanyLayout = () => {
+  const [company, setCompany] = useState({});
+
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/company/details", {
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+    })
+      .then((res) => res.json())
+      .then((result) => {
+        setCompany(result);
+      });
+  });
   return (
     <div>
       <AppBar position="static">
         <Typography variant="h5" sx={{ mt: 2, ml: 3 }} align="justify">
-          Company and co.
+          {company.name}
         </Typography>
         <Toolbar>
           <Stack direction="row" spacing={2}>

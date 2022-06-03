@@ -1,105 +1,99 @@
 import {
-  Box,
+  Alert,
   Button,
-  Card,
-  Container,
-  Grid,
-  Paper,
-  TextField,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Snackbar,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../../../store/auth-context";
+import NewCompanyForm from "./NewCompanyForm";
 
 const AddCompany = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [open, setOpen] = useState(false);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const customer = {
-      name,
-      email,
-      password,
-    };
-    console.log(customer);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("");
 
-    setName("");
-    setEmail("");
-    setPassword("");
+  const authCtx = useContext(AuthContext);
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowAlert(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleAddCompany = (company) => {
+    fetch("http://localhost:8080/admin/companies", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", token: authCtx.token },
+      body: JSON.stringify(company),
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.message);
+          });
+        }
+      })
+      .then((data) => {
+        setAlertMessage(data.name + " company added successfully!");
+        setAlertSeverity("success");
+        setShowAlert(true);
+        setOpen(false);
+      })
+      .catch((err) => {
+        setAlertMessage(err.message);
+        setAlertSeverity("error");
+        setShowAlert(true);
+      });
   };
 
   return (
     <div>
-      <Container maxWidth="xs">
-        <Card
-          elevation={6}
-          sx={{
-            mt: 3,
-          }}
+      <Button variant="contained" sx={{ mt: 2 }} onClick={handleClickOpen}>
+        Add New Company
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Add New Company</DialogTitle>
+        <DialogContent>
+          <NewCompanyForm text="Add Company" onSubmit={handleAddCompany} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          variant="filled"
+          onClose={handleCloseAlert}
+          severity={alertSeverity}
+          sx={{ width: "100%" }}
         >
-          <h2>Add New Company</h2>
-        </Card>
-      </Container>
-
-      <Container maxWidth="xs">
-        <Paper elevation={6}>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{
-              p: 3,
-              mt: 3,
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <TextField
-                  label="Name"
-                  variant="outlined"
-                  fullWidth
-                  onChange={(e) => setName(e.target.value)}
-                  value={name}
-                ></TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Email"
-                  variant="outlined"
-                  type="email"
-                  fullWidth
-                  onChange={(e) => setEmail(e.target.value)}
-                  value={email}
-                ></TextField>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Password"
-                  variant="outlined"
-                  type="password"
-                  fullWidth
-                  onChange={(e) => setPassword(e.target.value)}
-                  value={password}
-                ></TextField>
-              </Grid>
-            </Grid>
-            <Button
-              size="large"
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Add Comapny
-            </Button>
-          </Box>
-        </Paper>
-      </Container>
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
-
 export default AddCompany;

@@ -1,58 +1,50 @@
-import CompanyTable from "./company/CompanyTable";
-import CustomerTable from "./customer/CustomerTable";
+import { AppBar, Button, Stack, Toolbar, Typography } from "@mui/material";
+import HomeIcon from "@mui/icons-material/Home";
+import BusinessIcon from "@mui/icons-material/Business";
+import PeopleIcon from "@mui/icons-material/People";
+import { Link } from "react-router-dom";
 
 const AdminLayout = () => {
   return (
     <div>
-      <CustomerTable customers={dummyCustomers} />
-      <CompanyTable companies={dummyCompanies} />
+      <AppBar position="static">
+        <Typography variant="h5" sx={{ mt: 2, ml: 3 }} align="justify">
+          Administrator
+        </Typography>
+        <Toolbar>
+          <Stack direction="row" spacing={2}>
+            <Button
+              color="inherit"
+              startIcon={<HomeIcon />}
+              size="large"
+              component={Link}
+              to="/admin/home"
+            >
+              Home
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<BusinessIcon />}
+              size="large"
+              component={Link}
+              to="/admin/companies"
+            >
+              Companies
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<PeopleIcon />}
+              size="large"
+              component={Link}
+              to="/admin/customers"
+            >
+              Customers
+            </Button>
+          </Stack>
+        </Toolbar>
+      </AppBar>
     </div>
   );
 };
 
 export default AdminLayout;
-
-const dummyCustomers = [
-  {
-    id: 1,
-    firstName: "mike",
-    lastName: "jordan",
-    email: "mike@email.com",
-    password: "mike",
-  },
-  {
-    id: 2,
-    firstName: "dan",
-    lastName: "levy",
-    email: "dan@email.com",
-    password: "dan",
-  },
-  {
-    id: 3,
-    firstName: "michal",
-    lastName: "cohen",
-    email: "michal@email.com",
-    password: "michal",
-  },
-];
-
-const dummyCompanies = [
-  {
-    id: 101,
-    name: "coupons and co.",
-    email: "coupons@email.com",
-    password: "coupons",
-  },
-  {
-    id: 102,
-    name: "Bikes and Bikes",
-    email: "bikes@email.com",
-    password: "bikes",
-  },
-  {
-    id: 103,
-    name: "glasses LTD",
-    email: "glasses@email.com",
-    password: "glasses",
-  },
-];

@@ -10,8 +10,11 @@ import {
   Select,
   Paper,
   Card,
+  Snackbar,
+  Alert,
 } from "@mui/material";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import AuthContext from "../../store/auth-context";
 
 const AddCouponForm = () => {
   const [title, setTitle] = useState("");
@@ -21,6 +24,20 @@ const AddCouponForm = () => {
   const [amount, setAmount] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("");
+
+  const authCtx = useContext(AuthContext);
+
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowAlert(false);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -33,15 +50,31 @@ const AddCouponForm = () => {
       startDate,
       endDate,
     };
-    console.log(coupon);
 
-    fetch("http://localhost:8080/test/addCoupon", {
+    fetch("http://localhost:8080/company/coupons", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(coupon),
-    }).then(() => {
-      console.log("New Coupon added");
-    });
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.message);
+          });
+        }
+      })
+      .then((data) => {
+        setAlertMessage(data.title + " coupon added successfully!");
+        setAlertSeverity("success");
+        setShowAlert(true);
+      })
+      .catch((err) => {
+        setAlertMessage(err.message);
+        setAlertSeverity("error");
+        setShowAlert(true);
+      });
   };
 
   return (
@@ -165,6 +198,21 @@ const AddCouponForm = () => {
           </Box>
         </Paper>
       </Container>
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          variant="filled"
+          onClose={handleCloseAlert}
+          severity={alertSeverity}
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
