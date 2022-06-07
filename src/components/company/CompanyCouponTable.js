@@ -19,7 +19,7 @@ const CompanyCouponTable = () => {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:8080/company/coupons", {
+    fetch("/company/coupons", {
       headers: { "Content-Type": "application/json", token: authCtx.token },
     })
       .then((res) => res.json())
@@ -29,7 +29,7 @@ const CompanyCouponTable = () => {
   });
 
   const deleteHandler = (e) => {
-    let url = "http://localhost:8080/company/coupons/" + e.currentTarget.value;
+    let url = "/company/coupons/" + e.currentTarget.value;
     fetch(url, {
       method: "DELETE",
       headers: { "Content-Type": "application/json", token: authCtx.token },
@@ -46,7 +46,6 @@ const CompanyCouponTable = () => {
       elevation={6}
       sx={{
         maxWidth: "lg",
-        mt: 3,
         p: 3,
         alignItems: "center",
         display: "flex",

@@ -21,7 +21,7 @@ const CustomerTable = () => {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:8080/admin/customers", {
+    fetch("/admin/customers", {
       headers: { "Content-Type": "application/json", token: authCtx.token },
     })
       .then((res) => res.json())
@@ -31,7 +31,7 @@ const CustomerTable = () => {
   });
 
   const deleteHandler = (e) => {
-    let url = "http://localhost:8080/admin/customers/" + e.currentTarget.value;
+    let url = "/admin/customers/" + e.currentTarget.value;
     fetch(url, {
       method: "DELETE",
       headers: { "Content-Type": "application/json", token: authCtx.token },
@@ -53,7 +53,7 @@ const CustomerTable = () => {
         display: "flex",
       }}
     >
-      <TableContainer>
+      <TableContainer sx={{ maxHeight: 500 }}>
         <Stack
           direction="row"
           justifyContent="space-between"

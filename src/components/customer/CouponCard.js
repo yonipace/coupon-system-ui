@@ -35,7 +35,7 @@ const CouponCard = (props) => {
 
   const purchaseHandler = () => {
     /*purchase HTTP request */
-    fetch("http://localhost:8080/customer/purchase", {
+    fetch("/customer/purchase", {
       method: "POST",
       headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(props.coupon),

@@ -49,7 +49,7 @@ const UpdateCouponForm = (props) => {
       endDate,
     };
 
-    fetch("http://localhost:8080/company/coupons", {
+    fetch("/company/coupons", {
       method: "PUT",
       headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(updatedCoupon),

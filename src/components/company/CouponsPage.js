@@ -8,7 +8,7 @@ const CouponsPage = () => {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:8080/company/coupons", {
+    fetch("/company/coupons", {
       headers: { "Content-Type": "application/json", token: authCtx.token },
     })
       .then((res) => res.json())

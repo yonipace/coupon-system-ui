@@ -1,9 +1,23 @@
-import { Button, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Card, CardContent, Typography } from "@mui/material";
 
-const CompanyHomePage = () => {
+const CompanyHomePage = (props) => {
   return (
-    <Stack direction="row" spacing={2} sx={{ m: 5 }}>
+    <Card mt={12} sx={{ "text-align": "left" }}>
+      <CardContent>
+        <Typography variant="h4" sx={{ m: 1 }}>
+          {props.details.name}
+        </Typography>
+        <Typography variant="h6" sx={{ m: 1 }}>
+          Email: {props.details.email}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
+export default CompanyHomePage;
+
+{
+  /*<Stack direction="row" spacing={2} sx={{ m: 5 }}>
       <Button
         size="large"
         variant="contained"
@@ -20,7 +34,5 @@ const CompanyHomePage = () => {
       >
         Add Coupon
       </Button>
-    </Stack>
-  );
-};
-export default CompanyHomePage;
+    </Stack> */
+}

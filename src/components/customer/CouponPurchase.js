@@ -9,7 +9,7 @@ const CouponPurchase = () => {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:8080/customer/all-coupons", {
+    fetch("/customer/all-coupons", {
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => res.json())
@@ -21,9 +21,9 @@ const CouponPurchase = () => {
   return (
     <div>
       <List>
-        <Grid container sx={{ py: 3, px: 8 }}>
+        <Grid container sx={{ px: 8 }}>
           {coupons.map((coupon) => (
-            <Grid item md={6} xs={12}>
+            <Grid item md={4} sm={6} xs={12}>
               <CouponCard coupon={coupon} />
             </Grid>
           ))}

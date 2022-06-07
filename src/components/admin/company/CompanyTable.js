@@ -21,7 +21,7 @@ const CompanyTable = (props) => {
   const authCtx = useContext(AuthContext);
 
   useEffect(() => {
-    fetch("http://localhost:8080/admin/companies", {
+    fetch("/admin/companies", {
       headers: { "Content-Type": "application/json", token: authCtx.token },
     })
       .then((res) => res.json())
@@ -56,7 +56,7 @@ const CompanyTable = (props) => {
         display: "flex",
       }}
     >
-      <TableContainer>
+      <TableContainer sx={{ maxHeight: 500 }}>
         <Stack
           direction="row"
           justifyContent="space-between"

@@ -40,7 +40,7 @@ const AddCustomer = () => {
     console.log("from add customer");
     console.log(customer);
     /*HTTP request */
-    fetch("http://localhost:8080/admin/customers", {
+    fetch("/admin/customers", {
       method: "POST",
       headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(customer),

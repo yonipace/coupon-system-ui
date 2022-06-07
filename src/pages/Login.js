@@ -6,8 +6,6 @@ import {
   Container,
   Grid,
   Link,
-  Dialog,
-  AlertTitle,
   Typography,
 } from "@mui/material";
 import { useContext, useState } from "react";
@@ -17,7 +15,6 @@ import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import Alert from "@mui/material/Alert";
 import { Link as RouterLink } from "react-router-dom";
 import AuthContext from "../store/auth-context";
 
@@ -58,7 +55,7 @@ const Login = () => {
 
     /*send HTTP request */
 
-    fetch("http://localhost:8080/login", {
+    fetch("/login", {
       method: "POST",
       body: JSON.stringify(credentials),
       headers: {
@@ -75,7 +72,8 @@ const Login = () => {
         }
       })
       .then((data) => {
-        authCtx.login(data.token);
+        let expiration = new Date().getTime() + 1800000;
+        authCtx.login(data.token, data.client, expiration);
         history.replace(getClientUrl(data.client));
       })
       .catch((err) => {

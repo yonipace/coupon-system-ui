@@ -23,7 +23,7 @@ const UpdateCustomerForm = (props) => {
     };
     console.log(updatedCustomer);
 
-    fetch("http://localhost:8080/admin/customers", {
+    fetch("/admin/customers", {
       method: "PUT",
       headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(updatedCustomer),

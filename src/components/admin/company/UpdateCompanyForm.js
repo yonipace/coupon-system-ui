@@ -23,7 +23,7 @@ const UpdateCompanyForm = (props) => {
 
     /*Add put HTTP request here */
 
-    fetch("http://localhost:8080/admin/companies", {
+    fetch("/admin/companies", {
       method: "PUT",
       headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(updatedCompany),

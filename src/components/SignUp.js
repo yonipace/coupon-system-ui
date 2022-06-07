@@ -1,4 +1,11 @@
-import { Card, Container, FormLabel, Link } from "@mui/material";
+import {
+  Alert,
+  Card,
+  Container,
+  FormLabel,
+  Link,
+  Snackbar,
+} from "@mui/material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -11,6 +18,9 @@ import AuthContext from "../store/auth-context";
 
 const SignUp = () => {
   const [client, setClient] = useState("CUSTOMER");
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("");
 
   const authCtx = useContext(AuthContext);
   const history = useHistory();
@@ -24,12 +34,20 @@ const SignUp = () => {
     }
   };
 
+  const handleCloseAlert = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setShowAlert(false);
+  };
+
   const handleChange = (e) => {
     setClient(e.target.value);
   };
 
   const handleSignUp = (newClient) => {
-    let url = "http://localhost:8080/signup";
+    let url = "/signup";
     if (client === "CUSTOMER") {
       url += "/customer";
     }
@@ -48,16 +66,23 @@ const SignUp = () => {
           return res.json();
         } else {
           return res.json().then((data) => {
-            throw new Error();
+            console.log(data);
+            throw new Error(data.message);
           });
         }
       })
       .then((data) => {
-        authCtx.login(data.token);
+        let expiration = new Date().getTime() + 1800000;
+        authCtx.login(data.token, data.client, expiration);
         history.replace(getClientUrl(data.client));
+        setAlertMessage("Login Successfull!");
+        setAlertSeverity("success");
+        setShowAlert(true);
       })
       .catch((err) => {
-        alert(err.message);
+        setAlertMessage(err.message);
+        setAlertSeverity("error");
+        setShowAlert(true);
       });
   };
 
@@ -108,6 +133,20 @@ const SignUp = () => {
           </Link>
         </Card>
       </Container>
+      <Snackbar
+        open={showAlert}
+        autoHideDuration={6000}
+        onClose={handleCloseAlert}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseAlert}
+          severity={alertSeverity}
+          sx={{ width: "100%" }}
+        >
+          {alertMessage}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };

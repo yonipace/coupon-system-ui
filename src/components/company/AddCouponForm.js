@@ -51,7 +51,7 @@ const AddCouponForm = () => {
       endDate,
     };
 
-    fetch("http://localhost:8080/company/coupons", {
+    fetch("/company/coupons", {
       method: "POST",
       headers: { "Content-Type": "application/json", token: authCtx.token },
       body: JSON.stringify(coupon),
@@ -69,6 +69,14 @@ const AddCouponForm = () => {
         setAlertMessage(data.title + " coupon added successfully!");
         setAlertSeverity("success");
         setShowAlert(true);
+        //set all fields empty
+        setTitle("");
+        setDescription("");
+        setCategory("");
+        setAmount("");
+        setPrice("");
+        setStartDate("");
+        setEndDate("");
       })
       .catch((err) => {
         setAlertMessage(err.message);
@@ -80,12 +88,7 @@ const AddCouponForm = () => {
   return (
     <div>
       <Container maxWidth="sm">
-        <Card
-          elevation={6}
-          sx={{
-            mt: 3,
-          }}
-        >
+        <Card elevation={6}>
           <h2>Add New Coupon</h2>
         </Card>
       </Container>
@@ -132,9 +135,11 @@ const AddCouponForm = () => {
                     onChange={(e) => setCategory(e.target.value)}
                     value={category}
                   >
+                    <MenuItem value={"CARS"}>Cars</MenuItem>
                     <MenuItem value={"ELECTRICITY"}>Electricity</MenuItem>
-                    <MenuItem value={"RESTAURANT"}>Restaurant</MenuItem>
+                    <MenuItem value={"FOOD"}>Food</MenuItem>
                     <MenuItem value={"HOTEL"}>Hotel</MenuItem>
+                    <MenuItem value={"RESTAURANT"}>Restaurant</MenuItem>
                     <MenuItem value={"VACATION"}>Vacation</MenuItem>
                   </Select>
                 </FormControl>
