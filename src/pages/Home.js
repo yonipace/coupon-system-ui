@@ -7,10 +7,50 @@ import {
   Typography,
   Link as MUILink,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import { useContext, useState } from "react";
+import AuthContext from "../store/auth-context";
+
+const credentials = {
+  email: "admin@admin.com",
+  password: "admin",
+  client: "ADMIN",
+};
 
 const Home = () => {
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const authCtx = useContext(AuthContext);
+  const history = useHistory();
+
+  const loginAsAdmin = () => {
+    fetch("/login", {
+      method: "POST",
+      body: JSON.stringify(credentials),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          return res.json().then((data) => {
+            throw new Error(data.message);
+          });
+        }
+      })
+      .then((data) => {
+        let expiration = new Date().getTime() + 1800000;
+        authCtx.login(data.token, data.client, expiration);
+        history.replace("/admin");
+      })
+      .catch((err) => {
+        setErrorMessage(err.message);
+      });
+  };
+
   return (
     <div>
       <Container maxWidth="md" sx={{ mt: 3 }}>
@@ -46,12 +86,7 @@ const Home = () => {
               >
                 SignUp
               </Button>
-              <Button
-                size="large"
-                variant="outlined"
-                component={Link}
-                //  to="/signup"
-              >
+              <Button size="large" variant="outlined" onClick={loginAsAdmin}>
                 Get A Demo
               </Button>
             </Stack>

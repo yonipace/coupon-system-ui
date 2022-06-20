@@ -9,12 +9,14 @@ import {
 import HomeIcon from "@mui/icons-material/Home";
 import BusinessIcon from "@mui/icons-material/Business";
 import PeopleIcon from "@mui/icons-material/People";
+import SubjectIcon from "@mui/icons-material/Subject";
 import { Link } from "react-router-dom";
 import { useContext, useState } from "react";
 import AuthContext from "../../store/auth-context";
 import AdminHomePage from "../../pages/AdminHomePage";
 import CompanyTable from "./company/CompanyTable";
 import CustomerTable from "./customer/CustomerTable";
+import CouponPurchase from "../customer/CouponPurchase";
 
 const AdminLayout = () => {
   const [innerPage, setInnerPage] = useState();
@@ -80,6 +82,18 @@ const AdminLayout = () => {
               to="/admin/customers"
             >
               Customers
+            </Button>
+            <Button
+              color="inherit"
+              startIcon={<SubjectIcon />}
+              size="large"
+              onClick={() => {
+                setInnerPage(<CouponPurchase />);
+              }}
+              component={Link}
+              to="/admin/coupons"
+            >
+              COupons
             </Button>
           </Stack>
         </Toolbar>
